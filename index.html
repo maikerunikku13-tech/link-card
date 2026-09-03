@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f3efe7">
+  <title>Link Card Studio</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #20231f;
+      --muted: #70756d;
+      --line: #d8d6cd;
+      --paper: #f3efe7;
+      --panel: #fffdf8;
+      --accent: #e26d3f;
+      --accent-dark: #b84924;
+      --olive: #65745a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-width: 320px;
+      color: var(--ink);
+      background: var(--paper);
+      font-family: "Avenir Next", "Yu Gothic", sans-serif;
+    }
+    .shell { width: min(1120px, calc(100% - 32px)); margin: 0 auto; }
+    header { padding: 34px 0 28px; border-bottom: 1px solid var(--line); }
+    .brand { margin: 0 0 10px; color: var(--accent-dark); font-size: .75rem; font-weight: 900; letter-spacing: .18em; }
+    h1 { max-width: 620px; margin: 0; font-family: Georgia, serif; font-size: clamp(2.2rem, 7vw, 5rem); line-height: .98; letter-spacing: 0; }
+    .intro { max-width: 530px; margin: 18px 0 0; color: var(--muted); line-height: 1.7; }
+    main { display: grid; grid-template-columns: minmax(0, 1fr) minmax(320px, 440px); gap: 28px; padding: 30px 0 54px; align-items: start; }
+    .panel, .preview-wrap { background: var(--panel); border: 1px solid var(--line); }
+    .panel { padding: 22px; }
+    .section-title { margin: 0 0 18px; font-size: 1rem; }
+    .field { display: grid; gap: 7px; margin-top: 17px; }
+    label { color: var(--muted); font-size: .78rem; font-weight: 800; }
+    input, textarea, button { width: 100%; min-height: 46px; border: 1px solid var(--line); border-radius: 5px; color: var(--ink); background: #fff; font: inherit; }
+    input, textarea { padding: 12px 13px; }
+    textarea { min-height: 92px; resize: vertical; line-height: 1.5; }
+    input:focus, textarea:focus, button:focus-visible { outline: 3px solid rgba(226, 109, 63, .22); outline-offset: 2px; border-color: var(--accent); }
+    .file-drop { display: grid; min-height: 150px; place-items: center; padding: 18px; border: 1px dashed #b9b7ae; border-radius: 5px; color: var(--muted); text-align: center; cursor: pointer; background: #faf8f1; }
+    .file-drop:hover { border-color: var(--accent); color: var(--accent-dark); }
+    .file-drop input { display: none; }
+    .file-main { display: block; color: var(--ink); font-weight: 900; }
+    .file-sub { display: block; margin-top: 6px; font-size: .76rem; }
+    .actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 22px; }
+    .url-tools { display: grid; gap: 10px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+    .url-tools input { color: var(--muted); background: #f7f5ef; font-size: .78rem; }
+    button { padding: 0 14px; font-weight: 900; cursor: pointer; }
+    .primary { color: #fff; background: var(--accent); border-color: var(--accent); }
+    .primary:hover { background: var(--accent-dark); }
+    .secondary { background: transparent; }
+    .hint { margin: 16px 0 0; color: var(--muted); font-size: .76rem; line-height: 1.6; }
+    .preview-wrap { padding: 22px; position: sticky; top: 16px; }
+    .preview-label { display: flex; justify-content: space-between; margin-bottom: 14px; color: var(--muted); font-size: .74rem; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+    .card { display: block; overflow: hidden; color: inherit; text-decoration: none; border: 1px solid var(--line); border-radius: 7px; background: #fff; box-shadow: 0 12px 28px rgba(32, 35, 31, .1); }
+    .card-image { display: block; width: 100%; aspect-ratio: 1.62; object-fit: cover; background: #e8e5da; }
+    .card-copy { padding: 17px 17px 16px; }
+    .card-domain { overflow: hidden; margin: 0 0 8px; color: var(--olive); font-size: .72rem; font-weight: 900; text-overflow: ellipsis; white-space: nowrap; }
+    .card-title { margin: 0; font-size: 1.12rem; line-height: 1.35; }
+    .card-description { display: -webkit-box; overflow: hidden; margin: 8px 0 0; color: var(--muted); font-size: .84rem; line-height: 1.55; -webkit-box-orient: vertical; -webkit-line-clamp: 3; }
+    .status { min-height: 22px; margin: 13px 0 0; color: var(--accent-dark); font-size: .78rem; font-weight: 800; }
+    .empty-image { display: grid; place-items: center; color: var(--muted); font-size: .82rem; }
+    @media (max-width: 760px) {
+      .shell { width: min(100% - 24px, 560px); }
+      header { padding-top: 25px; }
+      main { grid-template-columns: 1fr; padding-top: 20px; }
+      .preview-wrap { position: static; order: -1; }
+      .panel { padding: 18px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="shell">
+      <p class="brand">LINK CARD STUDIO</p>
+      <h1>画像から、<br>リンクカード。</h1>
+      <p class="intro">画像を選んで、リンク先と文章を入れるだけ。スマホの中でカードを整えて、そのまま共有できます。</p>
+    </div>
+  </header>
+  <main class="shell">
+    <section class="panel" aria-labelledby="form-title">
+      <h2 class="section-title" id="form-title">カードをつくる</h2>
+      <label class="file-drop" for="image-input">
+        <span><span class="file-main" id="file-label">画像を選択</span><span class="file-sub">タップして端末の写真を選ぶ</span></span>
+        <input id="image-input" type="file" accept="image/*">
+      </label>
+      <div class="field"><label for="title-input">タイトル</label><input id="title-input" type="text" placeholder="カードのタイトル" maxlength="120"></div>
+      <div class="field"><label for="url-input">リンク先URL</label><input id="url-input" type="url" placeholder="https://example.com" inputmode="url"></div>
+      <div class="field"><label for="description-input">説明文</label><textarea id="description-input" placeholder="カードに添える説明" maxlength="240"></textarea></div>
+      <div class="actions"><button class="primary" id="share-button" type="button">共有する</button><button class="secondary" id="copy-button" type="button">HTMLをコピー</button></div>
+      <div class="url-tools">
+        <label for="share-url">Xに貼るカードURL</label>
+        <input id="share-url" type="text" readonly placeholder="生成ボタンでURLを作成">
+        <button class="secondary" id="generate-button" type="button">カードURLを生成してコピー</button>
+      </div>
+      <p class="hint">画像と入力内容はこの端末のブラウザ内だけで処理します。公開ページにする場合は、コピーしたHTMLをWebサイトへ貼り付けてください。</p>
+      <p class="status" id="status" aria-live="polite"></p>
+    </section>
+    <section class="preview-wrap" aria-labelledby="preview-title">
+      <div class="preview-label"><span id="preview-title">プレビュー</span><span>LIVE</span></div>
+      <a class="card" id="card" href="https://example.com" target="_blank" rel="noopener">
+        <div class="card-image empty-image" id="image-preview">画像を選ぶとここに表示されます</div>
+        <div class="card-copy"><p class="card-domain" id="domain-preview">example.com</p><h2 class="card-title" id="card-title">カードのタイトル</h2><p class="card-description" id="card-description">説明文がここに入ります。</p></div>
+      </a>
+    </section>
+  </main>
+  <script>
+    const imageInput = document.querySelector("#image-input");
+    const imagePreview = document.querySelector("#image-preview");
+    const fileLabel = document.querySelector("#file-label");
+    const titleInput = document.querySelector("#title-input");
+    const urlInput = document.querySelector("#url-input");
+    const descriptionInput = document.querySelector("#description-input");
+    const card = document.querySelector("#card");
+    const domainPreview = document.querySelector("#domain-preview");
+    const cardTitle = document.querySelector("#card-title");
+    const cardDescription = document.querySelector("#card-description");
+    const status = document.querySelector("#status");
+    const shareUrlInput = document.querySelector("#share-url");
+    let imageDataUrl = "";
+
+    function updateCard() {
+      const title = titleInput.value.trim() || "カードのタイトル";
+      const description = descriptionInput.value.trim() || "説明文がここに入ります。";
+      const url = urlInput.value.trim() || "https://example.com";
+      cardTitle.textContent = title;
+      cardDescription.textContent = description;
+      card.href = url;
+      try { domainPreview.textContent = new URL(url).hostname; } catch { domainPreview.textContent = "example.com"; }
+    }
+
+    imageInput.addEventListener("change", () => {
+      const file = imageInput.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        imageDataUrl = reader.result;
+        imagePreview.className = "card-image";
+        imagePreview.innerHTML = `<img class="card-image" src="${imageDataUrl}" alt="カード画像">`;
+        fileLabel.textContent = file.name;
+      });
+      reader.readAsDataURL(file);
+    });
+    [titleInput, urlInput, descriptionInput].forEach(input => input.addEventListener("input", updateCard));
+
+    function makeHtml() {
+      const image = imageDataUrl ? `<img src="${imageDataUrl}" alt="${titleInput.value.trim() || "カード画像"}">` : "";
+      return `<a href="${card.href}" target="_blank" rel="noopener" style="display:block;max-width:640px;color:inherit;text-decoration:none;border:1px solid #ddd;border-radius:8px;overflow:hidden;font-family:sans-serif;background:#fff">${image}<span style="display:block;padding:16px"><strong style="display:block;font-size:18px">${cardTitle.textContent}</strong><span style="display:block;margin-top:8px;color:#666">${cardDescription.textContent}</span></span></a>`;
+    }
+    function makeShareUrl() {
+      const shareUrl = new URL(window.location.href);
+      shareUrl.search = new URLSearchParams({
+        title: titleInput.value.trim(),
+        description: descriptionInput.value.trim(),
+        target: urlInput.value.trim(),
+        image: imageDataUrl
+      }).toString();
+      return shareUrl.toString();
+    }
+    document.querySelector("#generate-button").addEventListener("click", async () => {
+      if (!urlInput.value.trim()) { status.textContent = "リンク先URLを入力してください。"; urlInput.focus(); return; }
+      const shareUrl = makeShareUrl();
+      shareUrlInput.value = shareUrl;
+      await navigator.clipboard.writeText(shareUrl);
+      status.textContent = "カードURLをコピーしました。Xに貼り付けられます。";
+    });
+    document.querySelector("#copy-button").addEventListener("click", async () => {
+      await navigator.clipboard.writeText(makeHtml());
+      status.textContent = "カードHTMLをコピーしました。";
+    });
+    document.querySelector("#share-button").addEventListener("click", async () => {
+      if (!urlInput.value.trim()) { status.textContent = "リンク先URLを入力してください。"; urlInput.focus(); return; }
+      if (navigator.share) {
+        await navigator.share({ title: cardTitle.textContent, text: cardDescription.textContent, url: card.href });
+        status.textContent = "共有シートを開きました。";
+      } else {
+        await navigator.clipboard.writeText(card.href);
+        status.textContent = "リンクをコピーしました。";
+      }
+    });
+    function loadFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+      if (!params.has("title") && !params.has("target") && !params.has("image")) return;
+      titleInput.value = params.get("title") || "";
+      descriptionInput.value = params.get("description") || "";
+      urlInput.value = params.get("target") || "";
+      imageDataUrl = params.get("image") || "";
+      if (imageDataUrl) {
+        imagePreview.className = "card-image";
+        imagePreview.innerHTML = `<img class="card-image" src="${imageDataUrl}" alt="カード画像">`;
+        fileLabel.textContent = "共有カードの画像";
+      }
+      updateCard();
+      shareUrlInput.value = window.location.href;
+    }
+    updateCard();
+    loadFromUrl();
+  </script>
+</body>
+</html>
