@@ -173,8 +173,14 @@
         const shareUrl = new URL("api/card", window.location.href);
         shareUrl.search = new URLSearchParams({ title: titleInput.value.trim(), description: descriptionInput.value.trim(), target: urlInput.value.trim(), image: imageUrl }).toString();
         shareUrlInput.value = shareUrl.toString();
-        await navigator.clipboard.writeText(shareUrl.toString());
-        status.textContent = "X用カードURLをコピーしました。";
+        try {
+          await navigator.clipboard.writeText(shareUrl.toString());
+          status.textContent = "X用カードURLをコピーしました。";
+        } catch {
+          shareUrlInput.focus();
+          shareUrlInput.select();
+          status.textContent = "URLを生成しました。コピーが拒否されたため、URLを長押ししてコピーしてください。";
+        }
       } catch (error) { status.textContent = error.message; }
     });
     document.querySelector("#copy-button").addEventListener("click", async () => {
