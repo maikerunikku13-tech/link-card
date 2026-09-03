@@ -58,6 +58,7 @@ body {
 }
 
 .image-wrap {
+  position: relative;
   display: block;
 }
 
@@ -68,6 +69,28 @@ body {
   object-fit: cover;
 }
 
+.play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 78px;
+  height: 58px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, .62);
+  transform: translate(-50%, -50%);
+}
+
+.play::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  border-top: 13px solid transparent;
+  border-bottom: 13px solid transparent;
+  border-left: 20px solid #fff;
+  transform: translate(-38%, -50%);
+}
+
 .copy {
   padding: 20px;
 }
@@ -75,6 +98,7 @@ body {
 .copy h1 {
   margin: 0;
   font-size: 24px;
+  text-align: center;
 }
 
 .copy p {
@@ -92,7 +116,7 @@ body {
   rel="noopener noreferrer"
   aria-label="${safeTitle}を開く"
 >
-  ${safeImage ? `<div class="image-wrap"><img src="${safeImage}" alt="${safeTitle}"></div>` : ""}
+  ${safeImage ? `<div class="image-wrap"><img src="${safeImage}" alt="${safeTitle}"><span class="play" aria-hidden="true"></span></div>` : ""}
   <div class="copy">
     <h1>${safeTitle}</h1>
     <p>${safeDescription}</p>
