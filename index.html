@@ -2,8 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#f3efe7">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Link Card Studio</title>
 
   <style>
@@ -16,7 +15,6 @@
       --panel: #fffdf8;
       --accent: #e26d3f;
       --accent-dark: #b84924;
-      --olive: #65745a;
     }
 
     * {
@@ -28,7 +26,7 @@
       min-width: 320px;
       color: var(--ink);
       background: var(--paper);
-      font-family: "Yu Gothic", sans-serif;
+      font-family: "Avenir Next", "Yu Gothic", sans-serif;
     }
 
     .shell {
@@ -50,10 +48,11 @@
     }
 
     h1 {
+      max-width: 620px;
       margin: 0;
       font-family: Georgia, serif;
       font-size: clamp(2.2rem, 7vw, 5rem);
-      line-height: 1;
+      line-height: .98;
     }
 
     .intro {
@@ -73,8 +72,8 @@
 
     .panel,
     .preview-wrap {
-      border: 1px solid var(--line);
       background: var(--panel);
+      border: 1px solid var(--line);
     }
 
     .panel {
@@ -118,18 +117,14 @@
     textarea {
       min-height: 92px;
       resize: vertical;
+      line-height: 1.5;
     }
 
-    button {
-      padding: 0 14px;
-      font-weight: 900;
-      cursor: pointer;
-    }
-
-    button:focus-visible,
     input:focus,
-    textarea:focus {
+    textarea:focus,
+    button:focus-visible {
       outline: 3px solid rgba(226, 109, 63, .22);
+      outline-offset: 2px;
       border-color: var(--accent);
     }
 
@@ -144,6 +139,11 @@
       text-align: center;
       cursor: pointer;
       background: #faf8f1;
+    }
+
+    .file-drop:hover {
+      border-color: var(--accent);
+      color: var(--accent-dark);
     }
 
     .file-drop input {
@@ -180,7 +180,13 @@
     .url-tools input {
       color: var(--muted);
       background: #f7f5ef;
-      font-size: .75rem;
+      font-size: .78rem;
+    }
+
+    button {
+      padding: 0 14px;
+      font-weight: 900;
+      cursor: pointer;
     }
 
     .primary {
@@ -189,26 +195,19 @@
       border-color: var(--accent);
     }
 
+    .primary:hover {
+      background: var(--accent-dark);
+    }
+
     .secondary {
       background: transparent;
     }
 
-    .hint,
-    .status {
+    .hint {
+      margin: 16px 0 0;
       color: var(--muted);
       font-size: .76rem;
       line-height: 1.6;
-    }
-
-    .hint {
-      margin: 16px 0 0;
-    }
-
-    .status {
-      min-height: 22px;
-      margin: 13px 0 0;
-      color: var(--accent-dark);
-      font-weight: 800;
     }
 
     .preview-wrap {
@@ -225,6 +224,7 @@
       font-size: .74rem;
       font-weight: 900;
       letter-spacing: .1em;
+      text-transform: uppercase;
     }
 
     .card {
@@ -239,12 +239,10 @@
     }
 
     .card-image {
-      display: grid;
+      display: block;
       width: 100%;
-      aspect-ratio: 1.62;
-      place-items: center;
-      overflow: hidden;
-      color: var(--muted);
+      aspect-ratio: 16 / 9;
+      object-fit: cover;
       background: #e8e5da;
     }
 
@@ -266,7 +264,7 @@
     .card-domain {
       overflow: hidden;
       margin: 0 0 8px;
-      color: var(--olive);
+      color: #65745a;
       font-size: .72rem;
       font-weight: 900;
       text-overflow: ellipsis;
@@ -280,20 +278,42 @@
     }
 
     .card-description {
+      display: -webkit-box;
+      overflow: hidden;
       margin: 8px 0 0;
       color: var(--muted);
       font-size: .84rem;
       line-height: 1.55;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 3;
+    }
+
+    .status {
+      min-height: 22px;
+      margin: 13px 0 0;
+      color: var(--accent-dark);
+      font-size: .78rem;
+      font-weight: 800;
+    }
+
+    .empty-image {
+      display: grid;
+      place-items: center;
+      color: var(--muted);
+      font-size: .82rem;
     }
 
     @media (max-width: 760px) {
       .shell {
-        width: calc(100% - 24px);
+        width: min(100% - 24px, 560px);
+      }
+
+      header {
+        padding-top: 25px;
       }
 
       main {
         grid-template-columns: 1fr;
-        gap: 20px;
         padding-top: 20px;
       }
 
@@ -302,13 +322,8 @@
         order: -1;
       }
 
-      .panel,
-      .preview-wrap {
+      .panel {
         padding: 18px;
-      }
-
-      .actions {
-        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -321,14 +336,14 @@
       <h1>画像から、<br>リンクカード。</h1>
       <p class="intro">
         画像を選んで、リンク先と文章を入れるだけ。
-        スマホでカードを作ってXに共有できます。
+        そのまま共有できます。
       </p>
     </div>
   </header>
 
   <main class="shell">
-    <section class="panel">
-      <h2 class="section-title">カードをつくる</h2>
+    <section class="panel" aria-labelledby="form-title">
+      <h2 class="section-title" id="form-title">カードをつくる</h2>
 
       <label class="file-drop" for="image-input">
         <span>
@@ -340,51 +355,84 @@
 
       <div class="field">
         <label for="title-input">タイトル</label>
-        <input id="title-input" type="text" placeholder="カードのタイトル" maxlength="120">
+        <input
+          id="title-input"
+          type="text"
+          placeholder="カードのタイトル"
+          maxlength="120"
+        >
       </div>
 
       <div class="field">
         <label for="url-input">リンク先URL</label>
-        <input id="url-input" type="url" placeholder="TikTokのURL" inputmode="url">
+        <input
+          id="url-input"
+          type="url"
+          placeholder="https://www.tiktok.com/"
+          inputmode="url"
+        >
       </div>
 
       <div class="field">
         <label for="description-input">説明文</label>
-        <textarea id="description-input" placeholder="カードに添える説明" maxlength="240"></textarea>
+        <textarea
+          id="description-input"
+          placeholder="カードに添える説明"
+          maxlength="240"
+        ></textarea>
       </div>
 
       <div class="actions">
-        <button class="primary" id="share-button" type="button">共有する</button>
-        <button class="secondary" id="copy-button" type="button">HTMLをコピー</button>
+        <button class="primary" id="share-button" type="button">
+          共有する
+        </button>
+        <button class="secondary" id="copy-button" type="button">
+          HTMLをコピー
+        </button>
       </div>
 
       <div class="url-tools">
         <label for="share-url">Xに貼るカードURL</label>
-        <input id="share-url" type="text" readonly placeholder="生成ボタンでURLを作成">
+        <input
+          id="share-url"
+          type="text"
+          readonly
+          placeholder="生成ボタンでURLを作成"
+        >
         <button class="secondary" id="generate-button" type="button">
           カードURLを生成してコピー
         </button>
       </div>
 
       <p class="hint">
-        Xに貼る画像には再生ボタンを表示します。
+        画像と入力内容はこの端末のブラウザ内だけで処理します。
       </p>
+
       <p class="status" id="status" aria-live="polite"></p>
     </section>
 
-    <section class="preview-wrap">
+    <section class="preview-wrap" aria-labelledby="preview-title">
       <div class="preview-label">
-        <span>プレビュー</span>
-        <span>LIVE</span>
+        <span id="preview-title">プレビュー</span>
+        <span>16:9</span>
       </div>
 
-      <a class="card" id="card" href="https://example.com" target="_blank" rel="noopener">
-        <div class="card-image" id="image-preview">
+      <a
+        class="card"
+        id="card"
+        href="https://example.com"
+        target="_blank"
+        rel="noopener"
+      >
+        <div class="card-image empty-image" id="image-preview">
           画像を選ぶとここに表示されます
         </div>
+
         <div class="card-copy">
           <p class="card-domain" id="domain-preview">example.com</p>
-          <h2 class="card-title" id="card-title">カードのタイトル</h2>
+          <h2 class="card-title" id="card-title">
+            カードのタイトル
+          </h2>
           <p class="card-description" id="card-description">
             説明文がここに入ります。
           </p>
@@ -404,23 +452,26 @@
     const domainPreview = document.querySelector("#domain-preview");
     const cardTitle = document.querySelector("#card-title");
     const cardDescription = document.querySelector("#card-description");
-    const shareUrlInput = document.querySelector("#share-url");
     const status = document.querySelector("#status");
+    const shareUrlInput = document.querySelector("#share-url");
+
+    let imageDataUrl = "";
 
     const cloudName = "fz6atmpr";
     const uploadPreset = "link-card-upload";
 
     function updateCard() {
       const title = titleInput.value.trim() || "カードのタイトル";
-      const description = descriptionInput.value.trim() || "説明文がここに入ります。";
-      const target = urlInput.value.trim() || "https://example.com";
+      const description =
+        descriptionInput.value.trim() || "説明文がここに入ります。";
+      const url = urlInput.value.trim() || "https://example.com";
 
       cardTitle.textContent = title;
       cardDescription.textContent = description;
-      card.href = target;
+      card.href = url;
 
       try {
-        domainPreview.textContent = new URL(target).hostname;
+        domainPreview.textContent = new URL(url).hostname;
       } catch {
         domainPreview.textContent = "example.com";
       }
@@ -436,9 +487,10 @@
       const reader = new FileReader();
 
       reader.addEventListener("load", () => {
+        imageDataUrl = reader.result;
         imagePreview.className = "card-image has-image";
         imagePreview.innerHTML =
-          `<img src="${reader.result}" alt="カード画像">`;
+          `<img src="${imageDataUrl}" alt="カード画像">`;
         fileLabel.textContent = file.name;
       });
 
@@ -449,15 +501,21 @@
       input.addEventListener("input", updateCard);
     });
 
-    async function uploadImage() {
-      const file = imageInput.files[0];
+    function makeHtml() {
+      const image = imageDataUrl
+        ? `<img src="${imageDataUrl}" alt="カード画像">`
+        : "";
 
-      if (!file) {
-        throw new Error("画像を選択してください。");
+      return `<a href="${card.href}" target="_blank" rel="noopener" style="display:block;width:100%;max-width:640px;aspect-ratio:16/9;overflow:hidden;background:#000">${image}</a>`;
+    }
+
+    async function uploadImage() {
+      if (!imageInput.files[0]) {
+        return "";
       }
 
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("file", imageInput.files[0]);
       formData.append("upload_preset", uploadPreset);
 
       const response = await fetch(
@@ -476,92 +534,105 @@
         );
       }
 
-      const parts = result.secure_url.split("/upload/");
-      const baseUrl = parts[0];
-      const imagePath = parts[1];
+      const [prefix, imagePath] = result.secure_url.split("/upload/");
 
-      const playButton =
-        "c_fill,w_1200,h_741/" +
-        "l_text:Arial_800_bold:%E2%97%8F,co_black,o_55,g_center/" +
-        "l_text:Arial_130_bold:%E2%96%B6,co_white,g_center,x_12";
-        
-      return `${baseUrl}/upload/${playButton}/${imagePath}`;
+      return `${prefix}/upload/c_fill,w_1200,h_675/${imagePath}`;
     }
 
-    async function copyText(text) {
-      try {
-        await navigator.clipboard.writeText(text);
-        return true;
-      } catch {
-        return false;
-      }
-    }
-
-    document.querySelector("#generate-button").addEventListener("click", async () => {
-      if (!urlInput.value.trim()) {
-        status.textContent = "TikTokのURLを入力してください。";
-        urlInput.focus();
-        return;
-      }
-
-      try {
-        status.textContent = "画像をアップロード中...";
-
-        const imageUrl = await uploadImage();
-        const cardUrl = new URL("api/card", window.location.href);
-
-        cardUrl.search = new URLSearchParams({
-          title: titleInput.value.trim(),
-          description: descriptionInput.value.trim(),
-          target: urlInput.value.trim(),
-          image: imageUrl
-        }).toString();
-
-        shareUrlInput.value = cardUrl.toString();
-
-        if (await copyText(cardUrl.toString())) {
-          status.textContent = "X用カードURLをコピーしました。";
-        } else {
-          shareUrlInput.focus();
-          shareUrlInput.select();
-          status.textContent =
-            "URLを生成しました。URLを長押ししてコピーしてください。";
+    document.querySelector("#generate-button")
+      .addEventListener("click", async () => {
+        if (!urlInput.value.trim()) {
+          status.textContent = "リンク先URLを入力してください。";
+          urlInput.focus();
+          return;
         }
-      } catch (error) {
-        status.textContent = error.message;
-      }
-    });
 
-    document.querySelector("#copy-button").addEventListener("click", async () => {
-      if (await copyText(shareUrlInput.value || card.href)) {
-        status.textContent = "URLをコピーしました。";
-      } else {
-        shareUrlInput.focus();
-        shareUrlInput.select();
-        status.textContent = "URLを選択しました。長押ししてコピーしてください。";
-      }
-    });
+        try {
+          status.textContent = "画像をアップロード中...";
 
-    document.querySelector("#share-button").addEventListener("click", async () => {
-      if (!urlInput.value.trim()) {
-        status.textContent = "TikTokのURLを入力してください。";
-        urlInput.focus();
+          const imageUrl = await uploadImage();
+          const shareUrl = new URL("api/card", window.location.href);
+
+          shareUrl.search = new URLSearchParams({
+            title: titleInput.value.trim(),
+            description: descriptionInput.value.trim(),
+            target: urlInput.value.trim(),
+            image: imageUrl
+          }).toString();
+
+          shareUrlInput.value = shareUrl.toString();
+
+          try {
+            await navigator.clipboard.writeText(shareUrl.toString());
+            status.textContent = "カードURLをコピーしました。";
+          } catch {
+            shareUrlInput.focus();
+            shareUrlInput.select();
+            status.textContent =
+              "URLを生成しました。長押ししてコピーしてください。";
+          }
+        } catch (error) {
+          status.textContent = error.message;
+        }
+      });
+
+    document.querySelector("#copy-button")
+      .addEventListener("click", async () => {
+        await navigator.clipboard.writeText(makeHtml());
+        status.textContent = "カードHTMLをコピーしました。";
+      });
+
+    document.querySelector("#share-button")
+      .addEventListener("click", async () => {
+        if (!urlInput.value.trim()) {
+          status.textContent = "リンク先URLを入力してください。";
+          urlInput.focus();
+          return;
+        }
+
+        if (navigator.share) {
+          await navigator.share({
+            title: cardTitle.textContent,
+            text: cardDescription.textContent,
+            url: card.href
+          });
+
+          status.textContent = "共有シートを開きました。";
+        } else {
+          await navigator.clipboard.writeText(card.href);
+          status.textContent = "リンクをコピーしました。";
+        }
+      });
+
+    function loadFromUrl() {
+      const params = new URLSearchParams(window.location.search);
+
+      if (
+        !params.has("title") &&
+        !params.has("target") &&
+        !params.has("image")
+      ) {
         return;
       }
 
-      if (navigator.share) {
-        await navigator.share({
-          title: cardTitle.textContent,
-          text: cardDescription.textContent,
-          url: card.href
-        });
-      } else {
-        await copyText(card.href);
-        status.textContent = "リンクをコピーしました。";
+      titleInput.value = params.get("title") || "";
+      descriptionInput.value = params.get("description") || "";
+      urlInput.value = params.get("target") || "";
+      imageDataUrl = params.get("image") || "";
+
+      if (imageDataUrl) {
+        imagePreview.className = "card-image has-image";
+        imagePreview.innerHTML =
+          `<img src="${imageDataUrl}" alt="カード画像">`;
+        fileLabel.textContent = "共有カードの画像";
       }
-    });
+
+      updateCard();
+      shareUrlInput.value = window.location.href;
+    }
 
     updateCard();
+    loadFromUrl();
   </script>
 </body>
 </html>
