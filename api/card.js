@@ -51,7 +51,7 @@ export default function handler(request, response) {
 body {
   min-height: 100svh;
   margin: 0;
-  overflow: hidden;
+  overflow-x: hidden;
   color: #fff;
   background: #090909;
   font-family: Arial, "Yu Gothic", sans-serif;
@@ -107,8 +107,7 @@ body {
 .topbar,
 .side-actions,
 .post-copy,
-.progress,
-.tap-hint {
+.progress {
   position: absolute;
   z-index: 2;
 }
@@ -118,6 +117,7 @@ body {
   right: 0;
   left: 0;
   display: flex;
+  align-items: center;
   justify-content: center;
   gap: 27px;
   padding: 13px 18px;
@@ -125,17 +125,18 @@ body {
   font-weight: 800;
 }
 
-.live {
+.topbar .live {
   position: absolute;
   left: 18px;
   font-size: 12px;
+  letter-spacing: .06em;
 }
 
-.active {
+.topbar .active {
   position: relative;
 }
 
-.active::after {
+.topbar .active::after {
   position: absolute;
   right: 0;
   bottom: -10px;
@@ -147,16 +148,16 @@ body {
 }
 
 .side-actions {
+  top: 16%;
   right: 12px;
-  bottom: 94px;
   display: grid;
-  gap: 19px;
+  gap: 17px;
   justify-items: center;
 }
 
 .action {
   display: grid;
-  gap: 4px;
+  gap: 2px;
   justify-items: center;
   min-width: 50px;
   color: #fff;
@@ -173,6 +174,7 @@ body {
   place-items: center;
   color: #fff;
   line-height: 1;
+  text-shadow: 0 1px 4px #000;
 }
 
 .heart-icon {
@@ -180,84 +182,85 @@ body {
 }
 
 .comment-icon {
-  width: 38px;
-  height: 29px;
+  width: 42px;
+  height: 32px;
   margin: 4px 0 7px;
-  border: 4px solid #fff;
   border-radius: 50%;
-}
-
-.comment-icon::before {
-  position: absolute;
-  top: 7px;
-  left: 7px;
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  content: "";
   background: #fff;
-  box-shadow: 10px 0 #fff, 20px 0 #fff;
 }
 
 .comment-icon::after {
   position: absolute;
   right: 1px;
   bottom: -8px;
-  width: 12px;
-  height: 12px;
-  border-right: 4px solid #fff;
-  border-bottom: 4px solid #fff;
+  width: 15px;
+  height: 15px;
   content: "";
-  transform: skew(-24deg) rotate(25deg);
+  background: #fff;
+  clip-path: polygon(0 0, 100% 0, 0 100%);
+  transform: rotate(14deg);
+}
+
+.comment-icon::before {
+  position: absolute;
+  top: 11px;
+  left: 8px;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  content: "";
+  background: #777;
+  box-shadow: 11px 0 #777, 22px 0 #777;
 }
 
 .bookmark-icon {
-  width: 29px;
-  height: 37px;
-  border: 4px solid #fff;
-  border-bottom: 0;
+  width: 31px;
+  height: 42px;
+  border-radius: 2px 2px 0 0;
+  background: #fff;
 }
 
 .bookmark-icon::after {
   position: absolute;
-  right: -4px;
-  bottom: -8px;
-  left: -4px;
-  height: 16px;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 14px;
   content: "";
   background: #fff;
-  clip-path: polygon(0 0, 100% 0, 50% 100%);
+  clip-path: polygon(
+    0 0,
+    50% 72%,
+    100% 0,
+    100% 100%,
+    0 100%
+  );
 }
 
 .share-icon {
-  width: 38px;
-  height: 25px;
-  border-top: 5px solid #fff;
+  width: 43px;
+  height: 28px;
   border-radius: 50% 50% 0 0;
-  transform: rotate(-12deg);
-}
-
-.share-icon::before {
-  position: absolute;
-  top: -14px;
-  right: -1px;
-  width: 17px;
-  height: 17px;
-  border-top: 5px solid #fff;
-  border-right: 5px solid #fff;
-  content: "";
-  transform: rotate(25deg);
-}
-
-.share-icon::after {
-  position: absolute;
-  top: -13px;
-  left: 0;
-  width: 5px;
-  height: 31px;
-  content: "";
   background: #fff;
-  transform: rotate(-30deg);
+  clip-path: polygon(
+    0 100%,
+    12% 62%,
+    32% 34%,
+    53% 19%,
+    82% 4%,
+    100% 0,
+    95% 24%,
+    78% 22%,
+    58% 29%,
+    40% 41%,
+    24% 59%,
+    13% 78%
+  );
+}
+
+.share-icon::before,
+.share-icon::after {
+  display: none;
 }
 
 .count {
@@ -367,15 +370,6 @@ body {
   content: "";
 }
 
-.tap-hint {
-  top: 50%;
-  left: 50%;
-  padding-top: 53px;
-  color: rgba(255,255,255,.84);
-  font-size: 12px;
-  transform: translate(-50%, 25px);
-}
-
 @media (min-width: 431px) {
   .feed {
     border-radius: 8px;
@@ -397,7 +391,7 @@ body {
 ${
   safeImage
     ? `<img class="media" src="${safeImage}" alt="${safeTitle}">`
-    : `<div class="media empty-media">リンク先を開くには画面をタップしてください</div>`
+    : `<div class="media empty-media"></div>`
 }
 
 <div class="topbar">
@@ -406,10 +400,9 @@ ${
   <span class="active">おすすめ</span>
 </div>
 
-<div class="play"></div>
-<span class="tap-hint">タップしてリンクを開く</span>
+<div class="play" aria-hidden="true"></div>
 
-<aside class="side-actions">
+<aside class="side-actions" aria-hidden="true">
   <div class="profile">
     ${safeImage ? `<img src="${safeImage}" alt="">` : ""}
   </div>
@@ -447,3 +440,4 @@ ${
 </body>
 </html>`);
 }
+
